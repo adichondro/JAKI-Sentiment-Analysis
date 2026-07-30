@@ -32,26 +32,35 @@ By evaluating 8 different Machine Learning and Deep Learning algorithms, this pr
 
 ## ⚙️ Workflow & System Architecture
 
-The project follows a standard NLP lifecycle pipeline:
+The project follows a structured NLP lifecycle pipeline:
 
 ```mermaid
 flowchart TD
     A[Scrape Play Store Reviews] --> B[Data Cleaning & Deduplication]
-    B --> C[NLP Preprocessing Pipeline]
-    C --> C1[Emoji-to-Text Mapping]
-    C --> C2[Regex Cleaning & Lowercasing]
-    C --> C3[Slangword Normalization]
-    C --> C4[Tokenization & Negation-Aware Stopwords]
-    C4 --> D[Automatic 3-Class Lexicon Labeling]
+    
+    subgraph Preprocessing["NLP Preprocessing Pipeline"]
+        C1[Emoji-to-Text Mapping] --> C2[Regex Cleaning & Lowercasing]
+        C2 --> C3[Slangword Normalization]
+        C3 --> C4[Tokenization & Negation-Aware Stopwords]
+    end
+
+    B --> Preprocessing
+    Preprocessing --> D[Automatic 3-Class Lexicon Labeling]
+    
     D --> E[Exploratory Data Analysis & WordClouds]
-    E --> F[Feature Engineering]
-    F --> F1[TF-IDF Vectorizer]
-    F --> F2[Keras Sequence Tokenizer & Padding]
-    F1 --> G[Machine Learning Model Training]
-    F2 --> H[Deep Learning Model Training]
-    G --> I[Evaluation & Accuracy Benchmarks]
+    
+    Preprocessing -->|Preprocessed Text X| F[Feature Engineering]
+    D -->|Target Labels y| F
+    
+    F --> F1[TF-IDF Vectorization]
+    F --> F2[Keras Sequence Tokenization & Padding]
+    
+    F1 --> G["Machine Learning Models<br>(Logistic Regression, SVM, LinearSVC, LightGBM)"]
+    F2 --> H["Deep Learning Models<br>(LSTM, GRU, BiLSTM, Transformer)"]
+    
+    G --> I[Evaluation & Model Benchmarking]
     H --> I
-    I --> J[Real-time Sentiment Inference]
+    I --> J[Real-Time Sentiment Inference]
 ```
 
 ---
@@ -67,7 +76,7 @@ Data was collected from the JAKI application (`id.go.jakarta.smartcity.jaki`) on
 | Sentiment Class | Review Count | Percentage | Primary Characteristics |
 |---|---|---|---|
 | 🔴 **Negative (`negative`)** | 2,587 | 62.7% | Complaints regarding system bugs, lags, errors, verification failures. |
-| 🔵 **Positive (`positive`)** | 1.016 | 24.6% | Praises for app features and public service reporting convenience. |
+| 🔵 **Positive (`positive`)** | 1,016 | 24.6% | Praises for app features and public service reporting convenience. |
 | ⚪ **Neutral (`neutral`)** | 520 | 12.6% | Inquiries, feature suggestions, and neutral feedback. |
 
 ---
